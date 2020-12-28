@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <property name="LOGS_DIR" value="logs/demo-basic-logback" />
+    <property name="FILE_ERROR_PATTERN" value="${FILE_LOG_PATTERN}"/>
+    <property name="FILE_INFO_PATTERN" value="${FILE_LOG_PATTERN}"/>
+    <property name="CONSOLE_PATTERN" value="${CONSOLE_LOG_PATTERN}"/>
+<!--    <property name="CONSOLE_PATTERN" value="%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %magenta(%-20.20thread) | %highlight(%5p) | %X{correlationId} | %yellow(%logger{0}.%M) - %m%n"/>-->
+
+    <!--  log config for local development  -->
+    <springProfile name="default,local">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>INFO</level>
+            </filter>
+            <encoder>
+                <pattern>${CONSOLE_PATTERN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        <logger name="com.example" level="DEBUG"/>
+    </springProfile>
+
+    <!--  log config by file for deployment  -->
+    <springProfile name="test,prod">
+        <appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>ERROR</level>
+                <onMatch>DENY</onMatch>
+                <onMismatch>ACCEPT</onMismatch>
+            </filter>
+            <File>${LOGS_DIR}/info.log</File>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>${LOGS_DIR}/info.created_on_%d{yyyy-MM-dd}.part_%i.log</FileNamePattern>
+                <maxHistory>90</maxHistory>
+                <totalSizeCap>10GB</totalSizeCap>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>10MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${FILE_INFO_PATTERN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>Error</level>
+            </filter>
+            <File>${LOGS_DIR}/error.log</File>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>${LOGS_DIR}/error.created_on_%d{yyyy-MM-dd}.part_%i.log</FileNamePattern>
+                <maxHistory>90</maxHistory>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>10MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${FILE_ERROR_PATTERN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="FILE_INFO"/>
+            <appender-ref ref="FILE_ERROR"/>
+        </root>
+    </springProfile>
+
+    <!--  log config by datadog for deployment  -->
+    <springProfile name="datadog">
+        <appender name="STDOUT_JSON" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <findAndRegisterJacksonModules>false</findAndRegisterJacksonModules>
+            </encoder>
+        </appender>
+        <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+            <discardingThreshold>0</discardingThreshold>
+            <queueSize>500</queueSize>
+            <appender-ref ref="STDOUT_JSON" />
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="ASYNC"/>
+        </root>
+    </springProfile>
+
+</configuration>
