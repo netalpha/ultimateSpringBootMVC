@@ -1,0 +1,28 @@
+spring:
+  .application:
+    name: demo-properties
+
+custom:
+  string-value: string
+  int-value: 1
+  list-values:
+    - a
+    - b
+    - c
+  map-of-list-values:
+    key1:
+      - value11
+      - value12
+    key2:
+      - value21
+      - value22
+  map-of-string-values:
+    key1: value1
+    key2: value2
+  map-of-object-values:
+    key1:
+      username: u1
+      password: p1
+    key2:
+      username: u2
+      password: p2
