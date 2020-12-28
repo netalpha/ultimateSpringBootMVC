@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <property name="LOGS_DIR" value="logs/demo-basic-correlationId" />
+    <property name="CONSOLE_PATTERN" value="%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %magenta(%-20.20thread) | %highlight(%5p) | %X{correlationId} | %yellow(%logger{0}.%M) - %m%n"/>
+
+    <!--  log config for local development  -->
+    <springProfile name="default,local">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>INFO</level>
+            </filter>
+            <encoder>
+                <pattern>${CONSOLE_PATTERN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        <logger name="com.example" level="DEBUG"/>
+    </springProfile>
+
+</configuration>

@@ -27,6 +27,9 @@
     <modules>
         <module>demo-basic-properties</module>
         <module>demo-basic-conditional-bean</module>
+        <module>demo-basic-logback</module>
+        <module>demo-basic-exception-handler</module>
+        <module>demo-basic-correlation-id</module>
     </modules>
 
     <dependencyManagement>
