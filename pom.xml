@@ -25,8 +25,8 @@
     </properties>
 
     <modules>
-        <module>demo-properties</module>
-        <module>demo-conditional-bean</module>
+        <module>demo-basic-properties</module>
+        <module>demo-basic-conditional-bean</module>
     </modules>
 
     <dependencyManagement>
