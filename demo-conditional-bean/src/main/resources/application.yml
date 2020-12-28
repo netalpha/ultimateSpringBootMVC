@@ -1,0 +1,2 @@
+cache:
+  impl: memory  # guava|memory
