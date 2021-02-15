@@ -1,8 +1,2 @@
 cache:
   impl: memory  # guava|memory
-
-spring:
-  cloud:
-    gcp:
-      logging:
-        enabled: true
