@@ -11,7 +11,6 @@
 
 	<artifactId>demo-external-google-cloud-run</artifactId>
 
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

@@ -1,13 +1,19 @@
 package com.example.demo.exceptionhandler.model;
 
-import com.example.demo.exceptionhandler.exception.ServiceException;
-import com.example.demo.exceptionhandler.exception.ServiceExceptionEnum;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class ApiResponse {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ApiResponse implements Serializable {
 
     private Integer code;
 
@@ -15,19 +21,20 @@ public class ApiResponse {
 
     private Object data;
 
-    public static ApiResponse ofSuccess(Object response) {
+    public static ApiResponse success(final Object response) {
         return of(null, null, response);
     }
 
-    public static <T extends ServiceException> ApiResponse ofKnownFailure(T t) {
-        return of(t.getErrorEnum().getCode(), t.getErrorEnum().getMessage(), t.getDetails());
+    public static ApiResponse error(final Integer code, final String message) {
+        Assert.isTrue(Objects.nonNull(code), "code must not be null!");
+        return of(code, message, null);
     }
 
-    public static <T extends Exception> ApiResponse ofFatalFailure(T t) {
-        return of(ServiceExceptionEnum.SYS_ERROR.getCode(), ServiceExceptionEnum.SYS_ERROR.getMessage(), t.getLocalizedMessage());
+    public static ApiResponse error(final Integer code, final String message, final Object data) {
+        return of(code, message, data);
     }
 
-    private static ApiResponse of(Integer code, String message, Object data) {
+    private static ApiResponse of(final Integer code, final String message, final Object data) {
         return new ApiResponse(code, message, data);
     }
 }
